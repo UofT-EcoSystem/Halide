@@ -1,8 +1,9 @@
-#ifndef COMPILING_HALIDE_RUNTIME
-#error "halide_buffer_t.cpp can only be compiled with COMPILING_HALIDE_RUNTIME"
-#endif
-
+#ifdef COMPILING_HALIDE_RUNTIME
 #include "HalideRuntime.h"
+#define HALIDE_BUFFER_HELPER_ATTRS WEAK_INLINE
+#else
+#define HALIDE_BUFFER_HELPER_ATTRS inline
+#endif
 
 // Structs are annoying to deal with from within Halide Stmts. These
 // utility functions are for dealing with halide_buffer_t in that
@@ -13,84 +14,84 @@
 
 extern "C" {
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_get_dimensions(const halide_buffer_t *buf) {
     return buf->dimensions;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 uint8_t *_halide_buffer_get_host(const halide_buffer_t *buf) {
     return buf->host;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 uint64_t _halide_buffer_get_device(const halide_buffer_t *buf) {
     return buf->device;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 const struct halide_device_interface_t *_halide_buffer_get_device_interface(const halide_buffer_t *buf) {
     return buf->device_interface;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_get_min(const halide_buffer_t *buf, int d) {
     return buf->dim[d].min;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_get_max(const halide_buffer_t *buf, int d) {
     return buf->dim[d].min + buf->dim[d].extent - 1;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_get_extent(const halide_buffer_t *buf, int d) {
     return buf->dim[d].extent;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_get_stride(const halide_buffer_t *buf, int d) {
     return buf->dim[d].stride;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_set_host_dirty(halide_buffer_t *buf, bool val) {
     buf->set_host_dirty(val);
     return 0;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_set_device_dirty(halide_buffer_t *buf, bool val) {
     buf->set_device_dirty(val);
     return 0;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 bool _halide_buffer_get_host_dirty(const halide_buffer_t *buf) {
     return buf->host_dirty();
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 bool _halide_buffer_get_device_dirty(const halide_buffer_t *buf) {
     return buf->device_dirty();
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 halide_dimension_t *_halide_buffer_get_shape(halide_buffer_t *buf) {
     return buf->dim;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 bool _halide_buffer_is_bounds_query(const halide_buffer_t *buf) {
     return buf->host == NULL && buf->device == 0;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 uint32_t _halide_buffer_get_type(const halide_buffer_t *buf) {
     return buf->type.as_u32();
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 halide_buffer_t *_halide_buffer_init(halide_buffer_t *dst,
                                      halide_dimension_t *dst_shape,
                                      void *host,
@@ -117,7 +118,7 @@ halide_buffer_t *_halide_buffer_init(halide_buffer_t *dst,
     return dst;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 halide_buffer_t *_halide_buffer_init_from_buffer(halide_buffer_t *dst,
                                                  halide_dimension_t *dst_shape,
                                                  const halide_buffer_t *src) {
@@ -134,7 +135,7 @@ halide_buffer_t *_halide_buffer_init_from_buffer(halide_buffer_t *dst,
     return dst;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 halide_buffer_t *_halide_buffer_crop(void *user_context,
                                      halide_buffer_t *dst,
                                      halide_dimension_t *dst_shape,
@@ -164,7 +165,7 @@ halide_buffer_t *_halide_buffer_crop(void *user_context,
 // crop of some other larger buffer. This happens for extern stages
 // with distinct store_at/compute_at levels. Each call to the stage
 // only fills in part of the buffer.
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_retire_crop_after_extern_stage(void *user_context,
                                                   void *obj) {
     halide_buffer_t **buffers = (halide_buffer_t **)obj;
@@ -194,7 +195,7 @@ int _halide_buffer_retire_crop_after_extern_stage(void *user_context,
     return 0;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 int _halide_buffer_retire_crops_after_extern_stage(void *user_context,
                                                    void *obj) {
     halide_buffer_t **buffers = (halide_buffer_t **)obj;
@@ -205,7 +206,7 @@ int _halide_buffer_retire_crops_after_extern_stage(void *user_context,
     return 0;
 }
 
-WEAK_INLINE
+HALIDE_BUFFER_HELPER_ATTRS
 halide_buffer_t *_halide_buffer_set_bounds(halide_buffer_t *buf,
                                            int dim, int min, int extent) {
     buf->dim[dim].min = min;
@@ -214,4 +215,4 @@ halide_buffer_t *_halide_buffer_set_bounds(halide_buffer_t *buf,
 }
 }
 
-#undef WEAK_INLINE
+#undef HALIDE_BUFFER_HELPER_ATTRS
