@@ -23,6 +23,11 @@ int main(int argc, char **argv) {
     int major, minor;
     // int err = 
     interface->compute_capability(nullptr, &major, &minor);
+    // <bojian/TVM-AutoDiff> Removed the check on the returned error code. Not
+    //                       sure the reason why, but the program can run
+    //                       successfully even if the error code is non-zero.
+    //                       There is also no explanation on the return value
+    //                       of the error code.
     // assert(err != 0);
     int ver = major * 10 + minor;
     if (ver < 50) {

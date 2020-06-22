@@ -3,8 +3,11 @@ include ../support/autoscheduler.inc
 
 MATRIX_SIZE ?= 1024
 
+# <bojian/TVM-AutoDiff> Removed the version suffix of CUDA.
+# CUDA_SDK ?= /usr/local/cuda-8.0
 CUDA_SDK ?= /usr/local/cuda
 
+# <bojian/TVM-AutoDiff> Added the missing include directory for driver_types.h.
 CXXFLAGS += -I$(CUDA_SDK)/include/ \
             -I$(CUDA_SDK)/targets/x86_64-linux/include/ \
 	    -I../support/
