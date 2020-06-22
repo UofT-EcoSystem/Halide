@@ -21,12 +21,17 @@ int main(int argc, char **argv) {
     const auto *interface = halide_cuda_device_interface();
     assert(interface->compute_capability != nullptr);
     int major, minor;
-    int err = interface->compute_capability(nullptr, &major, &minor);
-    assert(err != 0);
+    // int err = 
+    interface->compute_capability(nullptr, &major, &minor);
+    // assert(err != 0);
     int ver = major * 10 + minor;
     if (ver < 50) {
-        printf("[SKIP] This system supports only Cuda compute capability %d.%d, but compute capability 5.0+ is required.\n", major, minor);
+        printf("[SKIP] This system supports only Cuda compute capability "
+               "%d.%d, but compute capability 5.0+ is required.\n", 
+               major, minor);
         return 0;
+    } else {
+        printf("Compute Capability: %d.%d", major, minor);
     }
 
     int size = 1024;
