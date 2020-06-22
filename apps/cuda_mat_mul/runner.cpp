@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
                major, minor);
         return 0;
     } else {
-        printf("Compute Capability: %d.%d", major, minor);
+        printf("Compute Capability: %d.%d\n", major, minor);
     }
 
     int size = 1024;
